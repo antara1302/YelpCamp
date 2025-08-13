@@ -6,7 +6,8 @@ maptilerClient.config.apiKey = process.env.MAPTILER_API_KEY;
 //index
 module.exports.index = async (req, res) => {
     const campgrounds = await Campground.find({});
-    res.render('campgrounds/index', { campgrounds });
+    
+     res.render('campgrounds/index', { campgrounds });
 }
 
 //new
@@ -54,7 +55,8 @@ module.exports.renderEditForm = async (req, res) => {
 module.exports.updateCampground = async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
-
+    const geoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 });
+    campground.geometry = geoData.features[0].geometry;
     const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }));
     campground.images.push(...imgs);
     await campground.save();

@@ -20,7 +20,8 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
-
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
 
 //connecting to mongoDb
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp');
@@ -38,6 +39,8 @@ app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(mongoSanitize());
+app.use(helmet({ contentSecurityPolicy: false }));
 
 //middleware for parsing request body:
 app.use(express.urlencoded({ extended: true }));
@@ -45,6 +48,7 @@ app.use(methodOverride('_method'));
 
 //setting up session
 const sessionConfig = {
+    name: 'session',
     secret: "ikYourSecret",
     resave: false,
     saveUninitialized: true,

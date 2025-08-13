@@ -1,0 +1,10 @@
+.bg-image{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the entire background */
+    z-index: -1; /* Places the image behind all other content */
+    opacity: 0.5; /* Adjusts the opacity for a subtle background effect */
+}
