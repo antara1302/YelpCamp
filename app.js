@@ -22,9 +22,14 @@ const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
-
+const MongoDBStore = require('connect-mongo') (session);
+//const dbUrl= process.env.DB_URL;
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 //connecting to mongoDb
-mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp');
+
+
+mongoose.connect(dbUrl);
+//mongoose.connect(dbUrl);
 const db = mongoose.connection;
 
 db.once('open', () => {
@@ -40,24 +45,39 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
-app.use(helmet({ contentSecurityPolicy: false }));
+
+
+
 
 //middleware for parsing request body:
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 //setting up session
+const secret = process.env.SECRET || 'thisshouldbe a secret!';
+const store = new MongoDBStore({
+    url: dbUrl,
+    secret,
+    touchAfter: 24 * 60 * 60
+});
+
+store.on("error", function (e) {
+    console.log("SESSION STORE ERROR", e)
+})
+
 const sessionConfig = {
+    store,
     name: 'session',
-    secret: "ikYourSecret",
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, //7 days
-        maxAge: 1000 * 60 * 60 * 24 * 7 //7 days
+        // secure: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
     }
-};
+}
 app.use(session(sessionConfig));
 
 //setting up flash messages
@@ -104,13 +124,9 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('errors', { err });
 })
 
-//printing path and method
-app.use((req, res, next) => {
-    console.log(req.method, req.path);
-    next();
-});
 
 //starting the server
-app.listen('3000', () => {
-    console.log("app is listening on 3000");
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Serving on port ${port}`);
 })

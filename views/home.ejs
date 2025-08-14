@@ -11,18 +11,27 @@
 </head>
 
 <body>
-    <!-- The video element is placed here to act as the background -->
+    <!-- The video element is at the bottom of the stack -->
     <video autoplay muted loop id="myVideo">
-        <!-- Make sure to update the 'src' attribute to the correct path of your video file -->
         <source src="/videos/campBg.mp4" type="video/mp4">
         Your browser does not support HTML5 video.
     </video>
 
-    <div class=" d-flex w-100 h-100 p-3 mx-auto text-white flex-column">
+    <!-- The overlay is a transparent layer on top of the video -->
+    <div class="video-overlay"></div>
+
+    <!-- The main content container is on top of everything, making links clickable -->
+    <div class="main-content d-flex w-100 h-100 p-3 mx-auto text-white flex-column">
         <header class="mb-auto">
-            <div>
-                <h3 class="float-md-left mb-0">YelpCamp</h3>
-                <nav class="nav nav-masthead justify-content-center float-md-right">
+    <nav class="navbar navbar-expand-md navbar-dark ">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">YelpCamp</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ml-auto">
                     <a class="nav-link active" aria-current="page" href="#">Home</a>
                     <a class="nav-link" href="/campgrounds">Campgrounds</a>
                     <% if(!currentUser) { %>
@@ -31,9 +40,12 @@
                     <% } else { %>
                     <a class="nav-link" href="/logout">Logout</a>
                     <% } %>
-                </nav>
+                </div>
             </div>
-        </header>
+        </div>
+    </nav>
+</header>
+
         <main class="px-3 body-content">
             <h1>YelpCamp</h1>
             <p class="lead"> Welcome to YelpCamp! <br> Jump right in and explore our many campgrounds. <br>
@@ -41,7 +53,6 @@
             <a href="/campgrounds" class="btn btn-lg btn-secondary font-weight-bold border-white bg-white">View
                 Campgrounds</a>
         </main>
-
         <footer class="mt-auto text-white-50">
             <p>&copy; 2025 </p>
         </footer>
