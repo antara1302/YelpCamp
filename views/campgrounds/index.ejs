@@ -33,6 +33,11 @@
             </div>
         </div>
         <% }%>
+        <link
+  rel="stylesheet"
+  href="https://cdn.maptiler.com/maptiler-sdk-js/v2.0.3/maptiler-sdk.css"
+/>
+<script src="https://cdn.maptiler.com/maptiler-sdk-js/v2.0.3/maptiler-sdk.umd.min.js"></script>
             <script>
                 const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
                 const campgrounds = { features: <%- JSON.stringify(campgrounds) %>}
